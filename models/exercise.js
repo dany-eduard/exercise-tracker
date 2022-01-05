@@ -10,6 +10,7 @@ const exerciseSchema = new Schema(
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 
