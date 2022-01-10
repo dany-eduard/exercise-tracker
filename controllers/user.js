@@ -25,3 +25,5 @@ export const listUsers = async (req, res) => {
     res.status(404).json({ error: error.message ?? error });
   }
 };
+
+export const findUserById = async (_id) => await User.findById(_id);
