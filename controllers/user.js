@@ -6,7 +6,7 @@ export const createUser = async (req, res) => {
   try {
     const newUser = new User({ username });
     const userCreated = await newUser.save();
-    res.json({ _id: userCreated._id, username: userCreated.username });
+    res.status(201).json({ _id: userCreated._id, username: userCreated.username });
   } catch (error) {
     res.status(400).json({ error: error.message ?? error });
   }
