@@ -1,3 +1,4 @@
+import bodyParser from 'body-parser';
 import connectiondb from './connectiondb.js';
 import cors from 'cors';
 import express from 'express';
@@ -13,6 +14,7 @@ const app = express();
 connectiondb();
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/api', router);
