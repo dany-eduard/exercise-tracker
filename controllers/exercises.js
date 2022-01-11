@@ -2,8 +2,22 @@ import Exercise from '../models/exercise.js';
 import { findUserById } from './user.js';
 
 export const saveExercise = async (req, res) => {
-  const user = await findUserById(req.body._id);
-  if (!user) return res.status(404).json({ error: `User with id <${req.body._id}> not found` });
+  let user = undefined;
+  try {
+    user = await findUserById(req.params._id);
+    if (!user)
+      return res
+        .status(404)
+        .json({
+          error: `User with id <${req.params._id}> not found. If you don't have an _id, create one.`,
+        });
+  } catch (error) {
+    return res
+      .status(404)
+      .json({
+        error: `User with id <${req.params._id}> not found. If you don't have an _id, create one.`,
+      });
+  }
 
   try {
     const { description, duration, date } = req.body;
@@ -12,7 +26,6 @@ export const saveExercise = async (req, res) => {
       description,
       duration: parseInt(duration, 10),
       date: date ? new Date(date) : new Date(),
-      _id: user._id,
     });
     const exerciseSaved = await newExercise.save();
 
@@ -20,10 +33,10 @@ export const saveExercise = async (req, res) => {
       username: exerciseSaved.username,
       description: exerciseSaved.description,
       duration: exerciseSaved.duration,
-      date: exerciseSaved.date,
+      date: exerciseSaved.date.toDateString(),
       _id: exerciseSaved._id,
     });
   } catch (error) {
-    res.staud(400).json({ error: error.message ?? error });
+    res.status(400).json({ error: error.message ?? error });
   }
 };
