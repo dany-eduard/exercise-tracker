@@ -5,6 +5,6 @@ const router = Router();
 
 router.get('/users', listUsers);
 router.post('/users', createUser);
-router.post('/api/users/:_id/exercises', saveExercise);
+router.post('/users/:_id/exercises', saveExercise);
 
 export default router;
