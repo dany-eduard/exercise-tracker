@@ -21,7 +21,7 @@ export const saveExercise = async (req, res) => {
       description: exerciseSaved.description,
     });
   } catch (error) {
-    res.status(400).json({ error: error.message ?? error });
+    res.status(400).json({ error: error.message || error });
   }
 };
 
