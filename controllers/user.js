@@ -1,4 +1,5 @@
 import User from '../models/user.js';
+import { countExercises, findExercies } from './exercises.js';
 
 export const createUser = async (req, res) => {
   const { username } = req.body;
@@ -26,4 +27,45 @@ export const listUsers = async (req, res) => {
   }
 };
 
+export const getUserLogs = async (req, res) => {
+  try {
+    const { _id, username } = await getUserByIdAndHandleError(req.params._id);
+    const userExercises = await findExercies({ username });
+    const totalExercises = await countExercises({ username });
+
+    res.status(200).json({
+      username,
+      count: totalExercises,
+      _id: _id.toString(),
+      log: userExercises.map((exercise) => {
+        return {
+          description: exercise.description,
+          duration: exercise.duration,
+          date: exercise.date.toDateString(),
+        };
+      }),
+    });
+  } catch (error) {
+    res.status(404).json({ error: error.message ?? error });
+  }
+};
+
 export const findUserById = async (_id) => await User.findById(_id);
+
+export const getUserByIdAndHandleError = async (id, res) => {
+  let user = undefined;
+
+  try {
+    user = await findUserById(id);
+    if (!user)
+      return res.status(404).json({
+        error: `User with id <${id}> not found. If you don't have an _id, create one.`,
+      });
+  } catch (error) {
+    return res.status(404).json({
+      error: `User with id <${id}> not found. If you don't have an _id, create one.`,
+    });
+  }
+
+  return user;
+};
