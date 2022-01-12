@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
-export const exerciseSchema = new Schema(
+const exerciseSchema = new Schema(
   {
     username: { type: String, required: true },
     description: { type: String, required: true },
