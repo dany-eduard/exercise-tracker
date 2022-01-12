@@ -6,35 +6,31 @@ export const saveExercise = async (req, res) => {
   try {
     user = await findUserById(req.params._id);
     if (!user)
-      return res
-        .status(404)
-        .json({
-          error: `User with id <${req.params._id}> not found. If you don't have an _id, create one.`,
-        });
-  } catch (error) {
-    return res
-      .status(404)
-      .json({
+      return res.status(404).json({
         error: `User with id <${req.params._id}> not found. If you don't have an _id, create one.`,
       });
+  } catch (error) {
+    return res.status(404).json({
+      error: `User with id <${req.params._id}> not found. If you don't have an _id, create one.`,
+    });
   }
 
   try {
     const { description, duration, date } = req.body;
     const newExercise = new Exercise({
       username: user.username,
-      description,
-      duration: parseInt(duration, 10),
       date: date ? new Date(date) : new Date(),
+      duration: parseInt(duration, 10),
+      description,
     });
     const exerciseSaved = await newExercise.save();
 
     res.status(201).json({
+      _id: user._id,
       username: exerciseSaved.username,
-      description: exerciseSaved.description,
-      duration: exerciseSaved.duration,
       date: exerciseSaved.date.toDateString(),
-      _id: exerciseSaved._id,
+      duration: exerciseSaved.duration,
+      description: exerciseSaved.description,
     });
   } catch (error) {
     res.status(400).json({ error: error.message ?? error });
