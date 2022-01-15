@@ -28,9 +28,16 @@ export const listUsers = async (req, res) => {
 };
 
 export const getUserLogs = async (req, res) => {
+  const { from, to, limit } = req.query;
+  const maxNumberLogs = limit ? limit : Number.MAX_SAFE_INTEGER;
+
   try {
     const { _id, username } = await getUserByIdAndHandleError(req.params._id);
-    const userExercises = await findExercies({ username });
+    const query = { username };
+    if (from) query.date = { $gte: new Date(from) };
+    if (to) query.date = { ...query.date, ...{ $lte: new Date(to) } };
+
+    const userExercises = await findExercies(query, maxNumberLogs);
     const totalExercises = await countExercises({ username });
 
     res.status(200).json({

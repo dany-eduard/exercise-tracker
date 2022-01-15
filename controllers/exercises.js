@@ -34,9 +34,9 @@ export const countExercises = async (query = {}) => {
   }
 };
 
-export const findExercies = async (query = {}, options = {}) => {
+export const findExercies = async (query = {}, limit = Number.MAX_SAFE_INTEGER) => {
   try {
-    return await Exercise.find(query, options);
+    return await Exercise.find(query).limit(limit);
   } catch (error) {
     console.error(error);
     return [];
